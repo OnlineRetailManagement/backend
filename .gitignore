@@ -1,0 +1,49 @@
+# Maven / Gradle build folders
+/target/
+/build/
+
+# IDE files
+/.idea/
+/*.iml
+/.project
+/.classpath
+/.settings/
+
+# Eclipse
+/.metadata/
+/*.log
+/bin/
+/tmp/
+
+# IntelliJ IDEA
+*.iws
+*.iml
+*.ipr
+/out/
+
+# VS Code
+.vscode/
+
+# Mac OS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
+# Spring Boot specific
+*.class
+*.jar
+*.war
+*.ear
+
+# Others
+*.swp
+*~
+<<<<<<< HEAD
+=======
+
+>>>>>>> f1fc4d4e9b71f0e1a03ed8a212cde22e50f6a9d5

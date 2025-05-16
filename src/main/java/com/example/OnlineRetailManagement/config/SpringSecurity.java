@@ -33,7 +33,7 @@ public class SpringSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/user/**").hasAnyRole("USER", "VENDOR", "ADMIN")
+                        .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/vendor/**").hasRole("VENDOR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

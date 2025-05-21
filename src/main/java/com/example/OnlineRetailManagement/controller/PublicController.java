@@ -34,8 +34,12 @@ public class PublicController {
     private JwtUtil jwtUtil;
 
     @GetMapping("/health-check")
-    public String healthCheck() {
-        return "Ok";
+    public GeneralResponse healthCheck() {
+        GeneralResponse generalResponse = new GeneralResponse();
+        String statusCode = String.valueOf(HttpStatus.OK.value());
+        generalResponse.setCode(statusCode);
+        generalResponse.setMsg("ALLES GUTE!");
+        return generalResponse;
     }
 
     @PostMapping("/signup")

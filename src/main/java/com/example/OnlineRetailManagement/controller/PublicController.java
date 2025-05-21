@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/public")
@@ -61,8 +60,14 @@ public class PublicController {
                     new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            HashMap<String, String> data = new HashMap<>();
+            HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);
+            data.put("username", userDetails.getUsername());
+            data.put("role", userDetails.getAuthorities());
+            data.put("accountNonExpired", userDetails.isAccountNonExpired());
+            data.put("accountNonLocked", userDetails.isAccountNonLocked());
+            data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
+            data.put("enabled", userDetails.isEnabled());
             generalResponse.setData(data);
             String statusCode = String.valueOf(HttpStatus.OK.value());
             generalResponse.setCode(statusCode);
@@ -75,34 +80,6 @@ public class PublicController {
             generalResponse.setCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
 
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/login-vendor")
-    public ResponseEntity<String> loginVendor(@RequestBody User user) {
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/login-admin")
-    public ResponseEntity<String> loginAdmin(@RequestBody User user) {
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -30,4 +30,7 @@ public class User {
 
     @Column(nullable = false)
     private String role;
+
+    private String firstName;
+    private String lastName;
 }

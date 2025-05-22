@@ -34,7 +34,6 @@ public class PublicController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @CrossOrigin(origins = "*")
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
         GeneralResponse generalResponse = new GeneralResponse();
@@ -44,27 +43,24 @@ public class PublicController {
         return generalResponse;
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/signup")
     public void signup(@RequestBody User user) {
         userService.saveNewUser(user);
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/signup-vendor")
     public void signupVendor(@RequestBody User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.saveVendor(user);
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         GeneralResponse generalResponse = new GeneralResponse();
         try{
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);

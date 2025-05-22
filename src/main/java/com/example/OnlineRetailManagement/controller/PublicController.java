@@ -20,6 +20,8 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/public")
 public class PublicController {
+
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -32,6 +34,7 @@ public class PublicController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
         GeneralResponse generalResponse = new GeneralResponse();
@@ -41,17 +44,20 @@ public class PublicController {
         return generalResponse;
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/signup")
     public void signup(@RequestBody User user) {
         userService.saveNewUser(user);
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/signup-vendor")
     public void signupVendor(@RequestBody User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.saveVendor(user);
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         GeneralResponse generalResponse = new GeneralResponse();

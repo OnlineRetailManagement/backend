@@ -37,7 +37,7 @@ public class PublicController {
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
         GeneralResponse generalResponse = new GeneralResponse();
-        String statusCode = String.valueOf(HttpStatus.OK.value());
+        Integer statusCode = HttpStatus.OK.value();
         generalResponse.setCode(statusCode);
         generalResponse.setMsg("ALLES GUTE!");
         return generalResponse;
@@ -71,7 +71,7 @@ public class PublicController {
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
             generalResponse.setData(data);
-            String statusCode = String.valueOf(HttpStatus.OK.value());
+            Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
             generalResponse.setMsg("Login Successful!");
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
@@ -79,7 +79,7 @@ public class PublicController {
             System.out.println(e);
 
             generalResponse.setMsg(String.valueOf(e));
-            generalResponse.setCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
 
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }

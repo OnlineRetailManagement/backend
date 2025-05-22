@@ -9,6 +9,6 @@ import java.util.HashMap;
 @Setter
 public class GeneralResponse {
     private String msg;
-    private String code;
+    private Integer code;
     private HashMap<String, ?> data;
 }

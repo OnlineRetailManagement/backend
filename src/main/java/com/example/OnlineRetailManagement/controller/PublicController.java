@@ -44,14 +44,63 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public void signup(@RequestBody User user) {
-        userService.saveNewUser(user);
+    public ResponseEntity<?> signup(@RequestBody User user) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            User savedUser = (User) userService.saveNewUser(user);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("jwt", jwt);
+            data.put("email", userDetails.getUsername());
+            data.put("role", userDetails.getAuthorities());
+            data.put("accountNonExpired", userDetails.isAccountNonExpired());
+            data.put("accountNonLocked", userDetails.isAccountNonLocked());
+            data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
+            data.put("enabled", userDetails.isEnabled());
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Signup Successful!");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/signup-vendor")
-    public void signupVendor(@RequestBody User user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.saveVendor(user);
+    public ResponseEntity<?> signupVendor(@RequestBody User user) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            User savedUser = (User) userService.saveVendor(user);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("jwt", jwt);
+            data.put("email", userDetails.getUsername());
+            data.put("role", userDetails.getAuthorities());
+            data.put("accountNonExpired", userDetails.isAccountNonExpired());
+            data.put("accountNonLocked", userDetails.isAccountNonLocked());
+            data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
+            data.put("enabled", userDetails.isEnabled());
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Signup Successful!");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/login")

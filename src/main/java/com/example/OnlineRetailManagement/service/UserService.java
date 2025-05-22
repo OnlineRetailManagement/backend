@@ -17,12 +17,12 @@ public class UserService {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean saveNewUser(User user) {
+    public Object saveNewUser(User user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
-            userRepository.save(user);
-            return true;
+            User savedUser = userRepository.save(user);
+            return savedUser;
         } catch (Exception e) {
             return false;
         }
@@ -34,10 +34,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void saveVendor(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_VENDOR");
-        userRepository.save(user);
+    public Object saveVendor(User user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole("ROLE_VENDOR");
+            User savedUser = userRepository.save(user);
+            return savedUser;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void saveUser(User user) {

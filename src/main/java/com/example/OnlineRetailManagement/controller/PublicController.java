@@ -64,7 +64,7 @@ public class PublicController {
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);
-            data.put("username", userDetails.getUsername());
+            data.put("email", userDetails.getUsername());
             data.put("role", userDetails.getAuthorities());
             data.put("accountNonExpired", userDetails.isAccountNonExpired());
             data.put("accountNonLocked", userDetails.isAccountNonLocked());

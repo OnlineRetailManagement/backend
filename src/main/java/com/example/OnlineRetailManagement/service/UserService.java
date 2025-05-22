@@ -19,7 +19,6 @@ public class UserService {
 
     public boolean saveNewUser(User user) {
         try {
-            System.out.println(user.getUserName());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
             userRepository.save(user);

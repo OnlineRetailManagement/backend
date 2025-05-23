@@ -45,19 +45,15 @@ public class User {
     @Column(name="gender")
     private String gender;
 
-    @Column(name="date_of_birth", nullable = false)
+    @Column(name="date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name="country", nullable = false)
+    @Column(name="country")
     private String country;
 
-    @Column(name="user_language", nullable = false)
+    @Column(name="user_language")
     private String userLanguage;
 
-    @Column(name="created_at", nullable = false)
+    @Column(name="created_at")
     private Date createdAt;
-//
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-//    private Cart cart;
 }

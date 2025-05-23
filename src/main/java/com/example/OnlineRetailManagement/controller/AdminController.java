@@ -1,15 +1,23 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.entity.GeneralResponse;
+import com.example.OnlineRetailManagement.entity.Pagination;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -34,4 +42,32 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return "Ok";
     }
+
+    @PostMapping("/get-all-users")
+    public ResponseEntity<GeneralResponse> getAllUsers(@RequestBody Pagination pagination){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            int limit = pagination.getLimit();
+            int offset = pagination.getOffset();
+
+            List<User> allUser = userService.findAllUsersPaginated(limit, offset);
+            HashMap<String, Object> data = new HashMap<>();
+
+            data.put("Users", allUser);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("List of Users Received");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

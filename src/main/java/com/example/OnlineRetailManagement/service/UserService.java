@@ -64,4 +64,8 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public List<User> findAllUsersPaginated(Integer limit, Integer offset){
+        return userRepository.findAllUsersPaginated(limit, offset);
+    }
 }

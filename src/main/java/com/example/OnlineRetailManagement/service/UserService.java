@@ -68,4 +68,8 @@ public class UserService {
     public List<User> findAllUsersPaginated(Integer limit, Integer offset){
         return userRepository.findAllUsersPaginated(limit, offset);
     }
+
+    public Integer findTotalCount(){
+        return userRepository.findTotalCount();
+    }
 }

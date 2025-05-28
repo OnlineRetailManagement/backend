@@ -43,7 +43,7 @@ public class AdminController {
         return "Ok";
     }
 
-    @PostMapping("/get-all-users")
+    @GetMapping("/users")
     public ResponseEntity<GeneralResponse> getAllUsers(@RequestBody Pagination pagination){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();
@@ -51,10 +51,17 @@ public class AdminController {
             int limit = pagination.getLimit();
             int offset = pagination.getOffset();
 
+            Integer totalCount = userService.findTotalCount();
             List<User> allUser = userService.findAllUsersPaginated(limit, offset);
             HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> paginationData = new HashMap<>();
 
-            data.put("Users", allUser);
+            data.put("users", allUser);
+            paginationData.put("totalCount", totalCount);
+            paginationData.put("usersPageCount", allUser.size());
+            paginationData.put("limit", limit);
+            paginationData.put("offset", offset);
+            data.put("pagination", paginationData);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);

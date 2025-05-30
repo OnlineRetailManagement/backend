@@ -20,24 +20,7 @@ public class UserService {
     public Object saveNewUser(User user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRole("ROLE_USER");
-            User savedUser = userRepository.save(user);
-            return savedUser;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public void saveAdmin(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_ADMIN");
-        userRepository.save(user);
-    }
-
-    public Object saveVendor(User user) {
-        try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRole("ROLE_VENDOR");
+            user.setRole(user.getRole());
             User savedUser = userRepository.save(user);
             return savedUser;
         } catch (Exception e) {

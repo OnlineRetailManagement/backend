@@ -66,42 +66,13 @@ public class PublicController {
         }catch (Exception e){
             System.out.println(e);
 
-            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setMsg("Bad Credentials");
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
 
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/signup-vendor")
-    public ResponseEntity<?> signupVendor(@RequestBody User user) {
-        GeneralResponse generalResponse = new GeneralResponse();
-        try{
-            User savedUser = (User) userService.saveVendor(user);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            HashMap<String, Object> data = new HashMap<>();
-            data.put("jwt", jwt);
-            data.put("email", userDetails.getUsername());
-            data.put("role", userDetails.getAuthorities());
-            data.put("accountNonExpired", userDetails.isAccountNonExpired());
-            data.put("accountNonLocked", userDetails.isAccountNonLocked());
-            data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
-            data.put("enabled", userDetails.isEnabled());
-            generalResponse.setData(data);
-            Integer statusCode = HttpStatus.OK.value();
-            generalResponse.setCode(statusCode);
-            generalResponse.setMsg("Signup Successful!");
-            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println(e);
-
-            generalResponse.setMsg(String.valueOf(e));
-            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
-
-            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
@@ -110,6 +81,7 @@ public class PublicController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+            User userDetail = userService.findByEmail(userDetails.getUsername());
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);
@@ -119,6 +91,7 @@ public class PublicController {
             data.put("accountNonLocked", userDetails.isAccountNonLocked());
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
+            data.put("user", userDetail);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);

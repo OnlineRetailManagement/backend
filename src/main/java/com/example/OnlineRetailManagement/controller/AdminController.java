@@ -15,11 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
@@ -105,6 +105,30 @@ public class AdminController {
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
             generalResponse.setMsg("List of Products Received");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<GeneralResponse> getSingleUsers(@PathVariable("id") Long userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Optional<User> user = userService.findById(userId);
+            data.put("user", user);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("User with id : "+userId);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         }catch (Exception e){
             System.out.println(e);

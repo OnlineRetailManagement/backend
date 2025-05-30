@@ -48,12 +48,10 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<GeneralResponse> getAllUsers(@RequestBody Pagination pagination){
+    public ResponseEntity<GeneralResponse> getAllUsers(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();
         try{
-            int limit = pagination.getLimit();
-            int offset = pagination.getOffset();
 
             Integer totalCount = userService.findTotalCount();
             List<User> allUser = userService.findAllUsersPaginated(limit, offset);
@@ -82,12 +80,10 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<GeneralResponse> getAllProducts(@RequestBody Pagination pagination){
+    public ResponseEntity<GeneralResponse> getAllProducts(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();
         try{
-            int limit = pagination.getLimit();
-            int offset = pagination.getOffset();
 
             Integer totalCount = productService.findTotalCount();
 

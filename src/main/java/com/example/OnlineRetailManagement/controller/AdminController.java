@@ -79,6 +79,38 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/vendors")
+    public ResponseEntity<GeneralResponse> getAllVendors(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            Integer totalCount = userService.findTotalCountVendors();
+            List<User> allVendor = userService.findAllUsersPaginatedVendors(limit, offset);
+            HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> paginationData = new HashMap<>();
+
+            data.put("vendors", allVendor);
+            paginationData.put("totalCount", totalCount);
+            paginationData.put("vendorsPageCount", allVendor.size());
+            paginationData.put("limit", limit);
+            paginationData.put("offset", offset);
+            data.put("pagination", paginationData);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("List of Vendors Received");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/products")
     public ResponseEntity<GeneralResponse> getAllProducts(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

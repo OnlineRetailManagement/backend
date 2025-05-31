@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/public")
@@ -106,4 +107,39 @@ public class PublicController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("modify/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long userId, @RequestBody User updatedUser) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email =  authentication.getName();
+            User currentUser = userService.findByEmail(email);
+            if(currentUser.getRole().equals("ROLE_USER") || currentUser.getRole().equals("ROLE_VENDOR")){
+                if(currentUser.getId() == userId){
+                    updatedUser.setId(userId);
+                    userService.saveNewUser(updatedUser);
+                    generalResponse.setMsg("User Updated");
+                }
+                else{
+                    generalResponse.setMsg("User is not authorized to update other users");
+                }
+            }
+            else{
+                updatedUser.setId(userId);
+                userService.saveNewUser(updatedUser);
+                generalResponse.setMsg("User Updated");
+            }
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

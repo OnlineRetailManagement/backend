@@ -28,9 +28,9 @@ public class UserService {
         }
     }
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
+//    public void saveUser(User user) {
+//        userRepository.save(user);
+//    }
 
     public List<User> getAll() {
         return userRepository.findAll();
@@ -52,7 +52,15 @@ public class UserService {
         return userRepository.findAllUsersPaginated(limit, offset);
     }
 
+    public List<User> findAllUsersPaginatedVendors(Integer limit, Integer offset){
+        return userRepository.findAllUsersPaginatedVendors(limit, offset);
+    }
+
     public Integer findTotalCount(){
         return userRepository.findTotalCount();
+    }
+
+    public Integer findTotalCountVendors(){
+        return userRepository.findTotalCountVendors();
     }
 }

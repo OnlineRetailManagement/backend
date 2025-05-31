@@ -15,7 +15,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM user LIMIT :limit OFFSET :offset", nativeQuery = true)
     List<User> findAllUsersPaginated(@Param("limit") int limit, @Param("offset") int offset);
 
+    @Query(value = "SELECT * FROM user WHERE role = 'ROLE_VENDOR' LIMIT :limit OFFSET :offset", nativeQuery = true)
+    List<User> findAllUsersPaginatedVendors(@Param("limit") int limit, @Param("offset") int offset);
+
     @Query(value = "SELECT count(*) FROM user", nativeQuery = true)
     Integer findTotalCount();
+
+    @Query(value = "SELECT count(*) FROM user where role = 'ROLE_VENDOR'", nativeQuery = true)
+    Integer findTotalCountVendors();
 
 }

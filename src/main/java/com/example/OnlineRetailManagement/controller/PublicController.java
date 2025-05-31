@@ -1,7 +1,9 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.entity.Attachment;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.User;
+import com.example.OnlineRetailManagement.service.AttachmentService;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
@@ -15,13 +17,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.Optional;
+
+import java.io.File;
 
 @RestController
 @RequestMapping("/public")
 public class PublicController {
 
+    private static final String BASE_DIRECTORY = "../uploads";
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -34,6 +43,9 @@ public class PublicController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private AttachmentService attachmentService;
 
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
@@ -139,6 +151,45 @@ public class PublicController {
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
 
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<?> uploadFile(@RequestBody Attachment attachment) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            if (attachment.getContent() == null || attachment.getFileName() == null || attachment.getFileType() == null || attachment.getCategory() == null) {
+                generalResponse.setMsg("Missing required fields");
+                generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+            }
+
+            byte[] fileData = Base64.getDecoder().decode(attachment.getContent());
+
+            String baseDir = "uploads";
+            String category = attachment.getCategory();
+            String fileNameWithExt = attachment.getFileName() + "." + attachment.getFileType();
+
+            Path uploadPath = Paths.get(baseDir, category, fileNameWithExt)
+                    .toAbsolutePath()
+                    .normalize();
+
+            Files.createDirectories(uploadPath.getParent());
+
+            try (FileOutputStream fos = new FileOutputStream(uploadPath.toFile())) {
+                fos.write(fileData);
+            }
+            attachment.setAttachmentPath(String.valueOf(uploadPath.toFile()));
+            attachmentService.saveAttachment(attachment);
+
+            generalResponse.setMsg("File uploaded successfully");
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("attachment", attachment);
+            generalResponse.setData(data);
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+           return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
 

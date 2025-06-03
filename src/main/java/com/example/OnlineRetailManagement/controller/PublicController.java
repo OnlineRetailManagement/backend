@@ -180,6 +180,7 @@ public class PublicController {
                 fos.write(fileData);
             }
             attachment.setAttachmentPath(String.valueOf(uploadPath.toFile()));
+            attachment.setContent(null);
             attachmentService.saveAttachment(attachment);
 
             generalResponse.setMsg("File uploaded successfully");

@@ -1,5 +1,7 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.DTO.AttachmentRequestDTO;
+import com.example.OnlineRetailManagement.DTO.AttachmentResponseDTO;
 import com.example.OnlineRetailManagement.entity.Attachment;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.User;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -23,8 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
-
-import java.io.File;
+import java.util.List;
 
 @RestController
 @RequestMapping("/public")
@@ -191,6 +193,51 @@ public class PublicController {
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {
            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/attachments")
+    public ResponseEntity<?> uploadAttachments(@RequestParam("file") MultipartFile file, @RequestParam("user_id") String userId) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            if (file==null || userId==null) {
+                generalResponse.setMsg("Missing required fields");
+                generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+            }
+
+            AttachmentResponseDTO resopnseDTO=attachmentService.saveAttachment(AttachmentRequestDTO.builder().file(file).userId(userId).build());
+
+            generalResponse.setMsg("File uploaded successfully");
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("attachment", resopnseDTO);
+            generalResponse.setData(data);
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/attachments")
+    public ResponseEntity<?> getAttachments(@RequestParam("user_id") Long userId,@RequestParam("product_id") Long productId) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            if (userId==null || productId==null) {
+                generalResponse.setMsg("Missing required fields");
+                generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+            }
+            List<Attachment> attachments=attachmentService.getAttachmentsByProductId(productId);
+
+            generalResponse.setMsg("File uploaded successfully");
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("attachment", attachments);
+            generalResponse.setData(data);
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
 

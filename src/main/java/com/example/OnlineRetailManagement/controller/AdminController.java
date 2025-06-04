@@ -1,14 +1,18 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.DTO.ProductRequestDTO;
+import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
+import com.example.OnlineRetailManagement.entity.Attachment;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
-import com.example.OnlineRetailManagement.entity.Pagination;
 import com.example.OnlineRetailManagement.entity.Product;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
+import com.example.OnlineRetailManagement.service.AttachmentService;
 import com.example.OnlineRetailManagement.service.ProductService;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
@@ -37,6 +42,8 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private AttachmentService attachmentService;
 
     @Autowired
     private UserRepository userRepository;
@@ -167,5 +174,124 @@ public class AdminController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<GeneralResponse> getProduct(@PathVariable("id") Long productId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Product product = productService.findProduct(productId);
+            List<Attachment> attachments=attachmentService.getAttachmentsByProductId(productId);
+            ProductResponseDTO responseDTO=ProductResponseDTO.builder()
+                    .id(product.getId())
+                    .actualPrice(product.getActualPrice())
+                    .discountedPrice(product.getDiscountedPrice())
+                    .category(product.getCategory())
+                    .createdAt(product.getCreatedAt())
+                    .ownedBy(product.getOwnedBy())
+                    .deliveryTime(product.getDeliveryTime())
+                    .title(product.getTitle())
+                    .titleDescription(product.getTitleDescription())
+                    .description(product.getDescription())
+                    .dimensions(product.getDimensions())
+                    .rating(product.getRating())
+                    .review(product.getReview())
+                    .soldQuantity(product.getSoldQuantity())
+                    .totalQuantity(product.getTotalQuantity())
+                    .availableQuantity(product.getAvailableQuantity())
+                    .weight(product.getWeight())
+                    .attachments(attachments)
+                    .build();
+
+            data.put("product", responseDTO);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Product with id: "+productId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/products")
+    public ResponseEntity<GeneralResponse> addProduct(@RequestBody ProductRequestDTO requestDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Request came at POST /product");
+        log.info("request data: {}", requestDTO.toString());
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Product product = productService.addProduct(requestDTO);
+            data.put("id", product.getId());
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Product created Successfully!"+product.getId());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping("/products/{id}")
+    public ResponseEntity<GeneralResponse> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductRequestDTO requestDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Product updatedProduct = productService.updateProduct(productId,requestDTO);
+            data.put("id", updatedProduct.getId());
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Updated Product with id: "+productId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<GeneralResponse> deleteProduct(@PathVariable("id") Long productId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+//            HashMap<String, Object> data = new HashMap<>();
+            productService.deleteProduct(productId);
+//            data.put("product", product);
+//            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Deleted Product with id: "+productId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 }

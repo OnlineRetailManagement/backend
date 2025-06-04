@@ -2,10 +2,7 @@ package com.example.OnlineRetailManagement.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,6 +10,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 
 @Entity
 @Table(name = "product")
@@ -20,7 +18,6 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name="title")
     private String title;
     @Column(name="title_description")
@@ -40,7 +37,7 @@ public class Product {
     @Column(name = "total_quantity")
     private Integer totalQuantity;
     @Column(name = "available_quantity")
-    private String availableQuantity;
+    private Integer availableQuantity;
     @Column(name = "Description")
     private String description;
     @Column(name = "weight")
@@ -48,7 +45,7 @@ public class Product {
     @Column(name = "dimensions")
     private String dimensions;
     @Column(name = "delivery_time")
-    private Date deliveryTime;
+    private String deliveryTime;
     @Column(name = "rating")
     private Double rating;
     @Column(name = "review")

@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -127,10 +128,37 @@ public class AdminController {
             Integer totalCount = productService.findTotalCount();
 
             List<Product> allProducts = productService.findAllProductsPaginated(limit, offset);
+            List<ProductResponseDTO> response=new ArrayList<>();
+
+            allProducts.stream().forEach((product)->{
+                List<Attachment> attachments=attachmentService.getAttachmentsByProductId(product.getId());
+                ProductResponseDTO responseDTO=ProductResponseDTO.builder()
+                        .id(product.getId())
+                        .actualPrice(product.getActualPrice())
+                        .discountedPrice(product.getDiscountedPrice())
+                        .category(product.getCategory())
+                        .createdAt(product.getCreatedAt())
+                        .ownedBy(product.getOwnedBy())
+                        .deliveryTime(product.getDeliveryTime())
+                        .title(product.getTitle())
+                        .titleDescription(product.getTitleDescription())
+                        .description(product.getDescription())
+                        .dimensions(product.getDimensions())
+                        .rating(product.getRating())
+                        .review(product.getReview())
+                        .soldQuantity(product.getSoldQuantity())
+                        .totalQuantity(product.getTotalQuantity())
+                        .availableQuantity(product.getAvailableQuantity())
+                        .weight(product.getWeight())
+                        .attachments(attachments)
+                        .build();
+                response.add(responseDTO);
+            });
             HashMap<String, Object> data = new HashMap<>();
             HashMap<String, Object> paginationData = new HashMap<>();
 
-            data.put("products", allProducts);
+//            data.put("products", allProducts);
+            data.put("products", response);
             paginationData.put("totalCount", totalCount);
             paginationData.put("productsPageCount", allProducts.size());
             paginationData.put("limit", limit);

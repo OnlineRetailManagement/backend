@@ -21,7 +21,7 @@ public class ProductResponseDTO {
     @JsonProperty("title_description")
     private String titleDescription;
     private String description;
-    @JsonProperty("attachment_ids")
+    @JsonProperty("attachments")
     private List<Attachment> attachments;
     @JsonProperty("actual_price")
     private Integer actualPrice;

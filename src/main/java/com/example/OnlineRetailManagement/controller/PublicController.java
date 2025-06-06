@@ -122,7 +122,7 @@ public class PublicController {
         }
     }
 
-    @PutMapping("modify/{id}")
+    @PutMapping("profile/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long userId, @RequestBody User updatedUser) {
         GeneralResponse generalResponse = new GeneralResponse();
         try{

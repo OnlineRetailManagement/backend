@@ -79,4 +79,42 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/cart/{cartId}")
+    public ResponseEntity<?> deleteCartItem(@PathVariable("cartId") Long cartId){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            cartService.deleteCartByUserId(cartId);
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("Cart Item Deleted");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cart Item not deleted");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("cart/{id}")
+    public ResponseEntity<?> updateCartItemQuantity(@PathVariable("id") Long cartId, @RequestBody Cart cart) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Integer quantity = cart.getQuantity();
+            Cart cartItemModify = cartService.getCartByCartId(cartId);
+            cartItemModify.setQuantity(quantity);
+            cartService.saveCart(cartItemModify);
+            generalResponse.setMsg("Cart item Quantity set to "+ quantity);
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

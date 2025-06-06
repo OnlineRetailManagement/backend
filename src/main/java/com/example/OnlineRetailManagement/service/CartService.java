@@ -20,4 +20,11 @@ public class CartService {
         return cartRepository.getCartByUserId(userid);
     }
 
+    public void deleteCartByUserId(Long cartId){
+        cartRepository.deleteById(cartId);
+    }
+
+    public Cart getCartByCartId(Long cartId){
+        return cartRepository.getReferenceById(cartId);
+    }
 }

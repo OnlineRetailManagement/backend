@@ -2,9 +2,15 @@ package com.example.OnlineRetailManagement.controller;
 
 import com.example.OnlineRetailManagement.entity.Cart;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
+import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
+import com.example.OnlineRetailManagement.entity.Attachment;
+import com.example.OnlineRetailManagement.entity.GeneralResponse;
+import com.example.OnlineRetailManagement.entity.Product;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
 import com.example.OnlineRetailManagement.service.CartService;
+import com.example.OnlineRetailManagement.service.AttachmentService;
+import com.example.OnlineRetailManagement.service.ProductService;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
@@ -21,6 +27,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/user")
@@ -34,6 +44,12 @@ public class UserController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private AttachmentService attachmentService;
 
     @GetMapping("/health-check")
     public String healthCheck() {
@@ -117,4 +133,110 @@ public class UserController {
         }
     }
 
+
+    @GetMapping("/products")
+    public ResponseEntity<GeneralResponse> getAllProducts(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            Integer totalCount = productService.findTotalCount();
+
+            List<Product> allProducts = productService.findAllProductsPaginated(limit, offset);
+            List<ProductResponseDTO> response=new ArrayList<>();
+
+            allProducts.stream().forEach((product)->{
+                List<Attachment> attachments=attachmentService.getAttachmentsByProductId(product.getId());
+                ProductResponseDTO responseDTO=ProductResponseDTO.builder()
+                        .id(product.getId())
+                        .actualPrice(product.getActualPrice())
+                        .discountedPrice(product.getDiscountedPrice())
+                        .category(product.getCategory())
+                        .createdAt(product.getCreatedAt())
+                        .ownedBy(product.getOwnedBy())
+                        .deliveryTime(product.getDeliveryTime())
+                        .title(product.getTitle())
+                        .titleDescription(product.getTitleDescription())
+                        .description(product.getDescription())
+                        .dimensions(product.getDimensions())
+                        .rating(product.getRating())
+                        .review(product.getReview())
+                        .soldQuantity(product.getSoldQuantity())
+                        .totalQuantity(product.getTotalQuantity())
+                        .availableQuantity(product.getAvailableQuantity())
+                        .weight(product.getWeight())
+                        .attachments(attachments)
+                        .build();
+                response.add(responseDTO);
+            });
+            HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> paginationData = new HashMap<>();
+
+//            data.put("products", allProducts);
+            data.put("products", response);
+            paginationData.put("totalCount", totalCount);
+            paginationData.put("productsPageCount", allProducts.size());
+            paginationData.put("limit", limit);
+            paginationData.put("offset", offset);
+            data.put("pagination", paginationData);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("List of Products Received");
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<GeneralResponse> getProduct(@PathVariable("id") Long productId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Product product = productService.findProduct(productId);
+            List<Attachment> attachments=attachmentService.getAttachmentsByProductId(productId);
+            ProductResponseDTO responseDTO=ProductResponseDTO.builder()
+                    .id(product.getId())
+                    .actualPrice(product.getActualPrice())
+                    .discountedPrice(product.getDiscountedPrice())
+                    .category(product.getCategory())
+                    .createdAt(product.getCreatedAt())
+                    .ownedBy(product.getOwnedBy())
+                    .deliveryTime(product.getDeliveryTime())
+                    .title(product.getTitle())
+                    .titleDescription(product.getTitleDescription())
+                    .description(product.getDescription())
+                    .dimensions(product.getDimensions())
+                    .rating(product.getRating())
+                    .review(product.getReview())
+                    .soldQuantity(product.getSoldQuantity())
+                    .totalQuantity(product.getTotalQuantity())
+                    .availableQuantity(product.getAvailableQuantity())
+                    .weight(product.getWeight())
+                    .attachments(attachments)
+                    .build();
+
+            data.put("product", responseDTO);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("Product with id: "+productId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

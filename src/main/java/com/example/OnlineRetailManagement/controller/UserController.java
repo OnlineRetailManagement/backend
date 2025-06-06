@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 @RestController
@@ -54,6 +55,25 @@ public class UserController {
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {
             generalResponse.setMsg("Item was not added to the cart");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/cart/{userId}")
+    public ResponseEntity<?> addCart(@PathVariable("userId") Long userId){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<Cart> cartList = cartService.getCartByUserId(userId);
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("List of items in the cart");
+            HashMap<String, List<Cart>> cartItems = new HashMap<>();
+            cartItems.put("cart_items", cartList);
+            generalResponse.setData(cartItems);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cannot fetch items for this user");
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }

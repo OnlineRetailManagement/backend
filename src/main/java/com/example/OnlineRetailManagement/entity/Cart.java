@@ -18,22 +18,23 @@ import java.time.LocalDateTime;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartid;
+    @Column(name = "cart_id")
+    private Long cartId;
 
-    @Column(nullable = false)
-    private Long userid;
+    @Column(name="user_id", nullable = false)
+    private Long userId;
 
-    @Column(nullable = false)
-    private Long productid;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Column(nullable = false)
     private Integer quantity = 1;
 
-    @Column(name = "createdat", nullable = false, updatable = false)
-    private LocalDateTime createdat;
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private LocalDateTime createdDate;
 
     @PrePersist
     protected void onCreate() {
-        this.createdat = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
     }
 }

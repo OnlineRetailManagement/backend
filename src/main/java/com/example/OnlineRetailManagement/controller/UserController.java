@@ -66,7 +66,7 @@ public class UserController {
             generalResponse.setCode(HttpStatus.OK.value());
             generalResponse.setMsg("Item added to the cart");
             HashMap<String, Long> cartId = new HashMap<>();
-            cartId.put("cart_id", cartAdded.getCartid());
+            cartId.put("cart_id", cartAdded.getCartId());
             generalResponse.setData(cartId);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {

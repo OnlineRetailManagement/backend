@@ -272,24 +272,24 @@ public class PublicController {
         }
     }
 
-//    @GetMapping("address/{id}")
-//    public ResponseEntity<?> addAddress(@RequestParam("id") Long userId ,@RequestBody Address address) {
-//        GeneralResponse generalResponse = new GeneralResponse();
-//        try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            Address addressResponse = addressService.saveAddress(address);
-//            generalResponse.setMsg("Address added Successfully !!");
-//            generalResponse.setCode(HttpStatus.OK.value());
-//            HashMap<String, Long> addressId = new HashMap<>();
-//            addressId.put("id", addressResponse.getId());
-//            generalResponse.setData(addressId);
-//            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
-//        } catch (Exception e) {
-//            generalResponse.setMsg("Address not added successfully !!");
-//            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
-//            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @GetMapping("address/{id}")
+    public ResponseEntity<?> getAddress(@PathVariable("id") Long userId) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<Address> addressesResponse = addressService.getAdressesByUserId(userId);
+            generalResponse.setMsg("Addresses fetched Successfully !!");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, List<Address>> addresses = new HashMap<>();
+            addresses.put("addresses", addressesResponse);
+            generalResponse.setData(addresses);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Address were not Fetched");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 }

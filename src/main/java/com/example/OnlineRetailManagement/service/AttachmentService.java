@@ -29,7 +29,7 @@ public class AttachmentService {
     public AttachmentResponseDTO saveAttachment(AttachmentRequestDTO requestDTO){
         try {
             // Ensure folder exists
-            Path uploadPath = Paths.get("../attachments");
+            Path uploadPath = Paths.get("../attachments").toAbsolutePath().normalize();
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
@@ -37,7 +37,8 @@ public class AttachmentService {
             // Generate file name and target path
             String originalFilename = requestDTO.getFile().getOriginalFilename();
             String filename = System.currentTimeMillis() + "_" + originalFilename;
-            Path targetPath = uploadPath.resolve(filename);
+            Path targetPath = uploadPath.resolve(filename).normalize();
+//            Path targetPath = uploadPath.resolve(filename).toAbsolutePath();
             String extension = "";
             if (originalFilename != null && originalFilename.contains(".")) {
                 extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);

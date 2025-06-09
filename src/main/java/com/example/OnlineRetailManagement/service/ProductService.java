@@ -25,6 +25,10 @@ public class ProductService{
         return productRepository.findAllProductsPaginated(limit, offset);
     }
 
+    public List<Product> findAllProductsPaginatedForVendor(Integer limit, Integer offset,Long userId){
+        return productRepository.findAllProductsPaginatedForVendor(limit, offset,userId);
+    }
+
     public Product findProduct(Long productId){
         return productRepository.findById(productId).orElseThrow(
                 () -> new EntityNotFoundException("Product not found with id: " + productId));
@@ -64,6 +68,10 @@ public class ProductService{
 
     public Integer findTotalCount() {
         return productRepository.findTotalCount();
+    }
+
+    public Integer findTotalCountForVendor(Long userId) {
+        return productRepository.findTotalCountForVendor(userId);
     }
 
     public Product updateProduct(Long productId,ProductRequestDTO requestDTO){

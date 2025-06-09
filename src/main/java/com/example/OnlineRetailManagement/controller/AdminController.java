@@ -120,7 +120,7 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<GeneralResponse> getAllProducts(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit){
+    public ResponseEntity<GeneralResponse> getAllProducts(@RequestParam(name = "offset") Integer offset, @RequestParam(name = "limit") Integer limit,@RequestParam(name = "user_id") Long userId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();
         try{

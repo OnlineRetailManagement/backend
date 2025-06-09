@@ -9,6 +9,7 @@ import com.example.OnlineRetailManagement.service.AttachmentService;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/public")
 public class PublicController {
 
@@ -60,11 +62,14 @@ public class PublicController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
+        log.info("/signup");
         GeneralResponse generalResponse = new GeneralResponse();
         try{
             User savedUser = (User) userService.saveNewUser(user);
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            User userDetail = userService.findByEmail(userDetails.getUsername());
+            userDetail.setPassword(null);
             HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);
             data.put("email", userDetails.getUsername());
@@ -73,6 +78,7 @@ public class PublicController {
             data.put("accountNonLocked", userDetails.isAccountNonLocked());
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
+            data.put("data", userDetail);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
@@ -97,6 +103,7 @@ public class PublicController {
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
             User userDetail = userService.findByEmail(userDetails.getUsername());
+            userDetail.setPassword(null);
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             HashMap<String, Object> data = new HashMap<>();
             data.put("jwt", jwt);
@@ -106,7 +113,7 @@ public class PublicController {
             data.put("accountNonLocked", userDetails.isAccountNonLocked());
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
-            data.put("user", userDetail);
+            data.put("data", userDetail);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
@@ -206,11 +213,11 @@ public class PublicController {
                 return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
             }
 
-            AttachmentResponseDTO resopnseDTO=attachmentService.saveAttachment(AttachmentRequestDTO.builder().file(file).userId(userId).build());
+            AttachmentResponseDTO responseDTO=attachmentService.saveAttachment(AttachmentRequestDTO.builder().file(file).userId(userId).build());
 
             generalResponse.setMsg("File uploaded successfully");
             HashMap<String, Object> data = new HashMap<>();
-            data.put("attachment", resopnseDTO);
+            data.put("attachment", responseDTO);
             generalResponse.setData(data);
             generalResponse.setCode(HttpStatus.OK.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);

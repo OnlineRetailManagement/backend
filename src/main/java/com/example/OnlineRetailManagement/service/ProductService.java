@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,7 +39,8 @@ public class ProductService{
     public Product addProduct(ProductRequestDTO productDTO){
         Product newProduct=new Product();
         newProduct.setTitle(productDTO.getTitle());
-        newProduct.setTitleDescription(productDTO.getDescription());
+        newProduct.setTitleDescription(productDTO.getTitleDescription());
+        newProduct.setDescription(productDTO.getDescription());
         newProduct.setActualPrice(productDTO.getActualPrice());
         newProduct.setOwnedBy(productDTO.getOwnedBy());
         newProduct.setWeight(productDTO.getWeight());
@@ -48,6 +51,7 @@ public class ProductService{
         newProduct.setAvailableQuantity(productDTO.getAvailableQuantity());
         newProduct.setDeliveryTime(productDTO.getDeliveryTime());
         newProduct.setSoldQuantity(productDTO.getSoldQuantity());
+        newProduct.setCreatedAt(LocalDateTime.now());
         log.info("product created to be saved: {}",newProduct);
 
         Product savedProduct=productRepository.save(newProduct);

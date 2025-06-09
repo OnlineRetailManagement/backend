@@ -4,6 +4,7 @@ package com.example.OnlineRetailManagement.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -25,7 +26,7 @@ public class Product {
     @Column(name="owned_by")
     private Long ownedBy;
     @Column(name="created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name="category")
     private String category;
     @Column(name="image_urls")

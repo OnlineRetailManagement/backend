@@ -1,5 +1,6 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.DTO.CartResponseDTO;
 import com.example.OnlineRetailManagement.entity.Cart;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
@@ -82,10 +83,11 @@ public class UserController {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             List<Cart> cartList = cartService.getCartByUserId(userId);
+            List<CartResponseDTO> cartList2 = cartService.getCartOfUserId(userId);
             generalResponse.setCode(HttpStatus.OK.value());
             generalResponse.setMsg("List of items in the cart");
-            HashMap<String, List<Cart>> cartItems = new HashMap<>();
-            cartItems.put("cart_items", cartList);
+            HashMap<String, List<CartResponseDTO>> cartItems = new HashMap<>();
+            cartItems.put("cart_items", cartList2);
             generalResponse.setData(cartItems);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {

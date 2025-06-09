@@ -4,6 +4,7 @@ import com.example.OnlineRetailManagement.entity.Attachment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ProductResponseDTO {
     @JsonProperty("sold_quantity")
     private Integer soldQuantity;
     @JsonProperty("created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private Double rating;
     private String review;
 }

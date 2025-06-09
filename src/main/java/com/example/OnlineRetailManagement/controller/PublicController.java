@@ -2,9 +2,11 @@ package com.example.OnlineRetailManagement.controller;
 
 import com.example.OnlineRetailManagement.DTO.AttachmentRequestDTO;
 import com.example.OnlineRetailManagement.DTO.AttachmentResponseDTO;
+import com.example.OnlineRetailManagement.entity.Address;
 import com.example.OnlineRetailManagement.entity.Attachment;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.User;
+import com.example.OnlineRetailManagement.service.AddressService;
 import com.example.OnlineRetailManagement.service.AttachmentService;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import com.example.OnlineRetailManagement.service.UserService;
@@ -50,6 +52,9 @@ public class PublicController {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private AddressService addressService;
 
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
@@ -247,5 +252,44 @@ public class PublicController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("address")
+    public ResponseEntity<?> addAddress(@RequestBody Address address) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Address addressResponse = addressService.saveAddress(address);
+            generalResponse.setMsg("Address added Successfully !!");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, Long> addressId = new HashMap<>();
+            addressId.put("id", addressResponse.getId());
+            generalResponse.setData(addressId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Address not added successfully !!");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+//    @GetMapping("address/{id}")
+//    public ResponseEntity<?> addAddress(@RequestParam("id") Long userId ,@RequestBody Address address) {
+//        GeneralResponse generalResponse = new GeneralResponse();
+//        try {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            Address addressResponse = addressService.saveAddress(address);
+//            generalResponse.setMsg("Address added Successfully !!");
+//            generalResponse.setCode(HttpStatus.OK.value());
+//            HashMap<String, Long> addressId = new HashMap<>();
+//            addressId.put("id", addressResponse.getId());
+//            generalResponse.setData(addressId);
+//            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+//        } catch (Exception e) {
+//            generalResponse.setMsg("Address not added successfully !!");
+//            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+//            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
 
 }

@@ -78,7 +78,7 @@ public class PublicController {
             data.put("accountNonLocked", userDetails.isAccountNonLocked());
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
-            data.put("data", userDetail);
+            data.put("user", userDetail);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
@@ -113,7 +113,7 @@ public class PublicController {
             data.put("accountNonLocked", userDetails.isAccountNonLocked());
             data.put("credentialsNonExpired", userDetails.isCredentialsNonExpired());
             data.put("enabled", userDetails.isEnabled());
-            data.put("data", userDetail);
+            data.put("user", userDetail);
             generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);

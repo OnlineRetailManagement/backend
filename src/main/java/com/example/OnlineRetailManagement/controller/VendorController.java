@@ -1,5 +1,6 @@
 package com.example.OnlineRetailManagement.controller;
 
+import com.example.OnlineRetailManagement.DTO.OrderResponseDTO;
 import com.example.OnlineRetailManagement.DTO.ProductRequestDTO;
 import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
 import com.example.OnlineRetailManagement.entity.Attachment;
@@ -7,10 +8,7 @@ import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.Product;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
-import com.example.OnlineRetailManagement.service.AttachmentService;
-import com.example.OnlineRetailManagement.service.ProductService;
-import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
-import com.example.OnlineRetailManagement.service.UserService;
+import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,9 @@ public class VendorController {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -231,6 +232,28 @@ public class VendorController {
             generalResponse.setMsg(String.valueOf(e));
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
 
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> getOrders(@RequestParam(name = "user_id") Long userId ){
+        log.info("request reached for getting order for: {}",userId);
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            List<OrderResponseDTO> orderList = orderService.getOrderItemsForVendor(userId);
+
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("List of items in the cart");
+            HashMap<String, List<OrderResponseDTO>> orderItems = new HashMap<>();
+            orderItems.put("order_items", orderList);
+            generalResponse.setData(orderItems);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cannot fetch Orders for this user");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }

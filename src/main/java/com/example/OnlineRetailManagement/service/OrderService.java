@@ -173,4 +173,61 @@ public class OrderService {
         });
         return  response;
     }
+
+    public List<OrderResponseDTO> getOrderItemsForVendor(Long userId) {
+
+        log.info("Getting order items for: {}",userId);
+        List<Order> orders= orderRepository.findByVendorId(userId);
+        log.info("Orders came for userId: {} {}",userId,orders.toString());
+        List<OrderResponseDTO> response=new ArrayList<>();
+
+        orders.stream().forEach((order) -> {
+
+            Product product= productService.findProduct(order.getProductId());
+            log.info("Product Found for product id: {} {} ",order.getProductId(), product);
+            List<Attachment> attachments=attachmentService.getAttachmentsByProductId(order.getProductId());
+            log.info("Attachments found for product id: {} {} ",order.getProductId(),attachments.toString());
+            log.info("Finding address for: {} ",order.getAddressId());
+            Address address= addressService.getAddressById(order.getAddressId());
+            log.info("address found for address id: {} {}",order.getAddressId(),address);
+
+            log.info("Finding address for: {} ",order.getAddressId());
+            Payment payment= paymentService.getPayment(order.getPaymentId());
+            log.info("address found for address id: {} {}",order.getAddressId(),address);
+
+            ProductResponseDTO productResponseDTO=ProductResponseDTO.builder()
+                    .id(product.getId())
+                    .actualPrice(product.getActualPrice())
+                    .discountedPrice(product.getDiscountedPrice())
+                    .category(product.getCategory())
+                    .createdAt(product.getCreatedAt())
+                    .ownedBy(product.getOwnedBy())
+                    .deliveryTime(product.getDeliveryTime())
+                    .title(product.getTitle())
+                    .titleDescription(product.getTitleDescription())
+                    .description(product.getDescription())
+                    .dimensions(product.getDimensions())
+                    .rating(product.getRating())
+                    .review(product.getReview())
+                    .soldQuantity(product.getSoldQuantity())
+                    .totalQuantity(product.getTotalQuantity())
+                    .availableQuantity(product.getAvailableQuantity())
+                    .weight(product.getWeight())
+                    .attachments(attachments)
+                    .build();
+
+            OrderResponseDTO orderResponseDTO=OrderResponseDTO.builder()
+                    .userId(order.getUserId())
+                    .orderId(order.getId())
+                    .checkoutDate(order.getCheckoutDate())
+                    .product(productResponseDTO)
+                    .quantity(order.getQuantity())
+                    .orderStatus(order.getOrderStatus())
+                    .address(address)
+                    .paymentInfo(payment)
+                    .build();
+            response.add(orderResponseDTO);
+        });
+        return  response;
+    }
 }

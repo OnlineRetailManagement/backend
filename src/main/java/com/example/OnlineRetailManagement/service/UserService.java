@@ -63,4 +63,8 @@ public class UserService {
     public Integer findTotalCountVendors(){
         return userRepository.findTotalCountVendors();
     }
+
+    public Integer findTotalCountUsers(){
+        return userRepository.findTotalCountUsers();
+    }
 }

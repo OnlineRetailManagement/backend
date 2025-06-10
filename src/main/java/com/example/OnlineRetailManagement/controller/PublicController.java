@@ -400,7 +400,7 @@ public class PublicController {
         }
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/profile/{id}")
     public ResponseEntity<GeneralResponse> getSingleUsers(@PathVariable("id") Long userId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();

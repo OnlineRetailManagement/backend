@@ -301,11 +301,7 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         GeneralResponse generalResponse = new GeneralResponse();
         try{
-
-//            HashMap<String, Object> data = new HashMap<>();
             productService.deleteProduct(productId);
-//            data.put("product", product);
-//            generalResponse.setData(data);
             Integer statusCode = HttpStatus.OK.value();
             generalResponse.setCode(statusCode);
             generalResponse.setMsg("Deleted Product with id: "+productId);
@@ -320,6 +316,29 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/statistics")
+    public ResponseEntity<GeneralResponse> adminStatistics(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Integer totalUserCount = userService.findTotalCountUsers();
+            Integer totalVendorCount = userService.findTotalCountVendors();
+            generalResponse.setMsg("Statistics fetched successfully");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, Object> dataMap = new HashMap<>();
+            dataMap.put("total_users", totalUserCount);
+            dataMap.put("total_vendors", totalVendorCount);
+            generalResponse.setData(dataMap);
 
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg("Cannot fetch statistics");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

@@ -2,14 +2,8 @@ package com.example.OnlineRetailManagement.controller;
 
 import com.example.OnlineRetailManagement.DTO.AttachmentRequestDTO;
 import com.example.OnlineRetailManagement.DTO.AttachmentResponseDTO;
-import com.example.OnlineRetailManagement.entity.Address;
-import com.example.OnlineRetailManagement.entity.Attachment;
-import com.example.OnlineRetailManagement.entity.GeneralResponse;
-import com.example.OnlineRetailManagement.entity.User;
-import com.example.OnlineRetailManagement.service.AddressService;
-import com.example.OnlineRetailManagement.service.AttachmentService;
-import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
-import com.example.OnlineRetailManagement.service.UserService;
+import com.example.OnlineRetailManagement.entity.*;
+import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +49,9 @@ public class PublicController {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping("/health-check")
     public GeneralResponse healthCheck() {
@@ -322,6 +319,81 @@ public class PublicController {
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {
             generalResponse.setMsg("Address was not deleted");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("payment")
+    public ResponseEntity<?> addPayment(@RequestBody Payment payment) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            Payment  paymentResponse = paymentService.addPayment(payment);
+            generalResponse.setMsg("Payment added Successfully !!");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, Long> paymentId = new HashMap<>();
+            paymentId.put("id", paymentResponse.getId());
+            generalResponse.setData(paymentId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Payment not added successfully !!");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("payment/{id}")
+    public ResponseEntity<?> getPayment(@PathVariable("id") Long userId) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<Payment> paymentResponse = paymentService.getPayments(userId);
+            generalResponse.setMsg("Payments fetched Successfully !!");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, List<Payment>> addresses = new HashMap<>();
+            addresses.put("payments", paymentResponse);
+            generalResponse.setData(addresses);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Address were not Fetched");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("payment/{id}")
+    public ResponseEntity<?> updatePayment(@PathVariable("id") Long paymentId, @RequestBody Payment payment){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            payment.setId(paymentId);
+            Payment paymentResponse =  paymentService.addPayment(payment);
+            generalResponse.setMsg("Payment was updated");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, Payment> paymentMap = new HashMap<>();
+            paymentMap.put("updated_payment", paymentResponse);
+            generalResponse.setData(paymentMap);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Payment was not updated");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("payment/{id}")
+    public ResponseEntity<?> deletePayment(@PathVariable("id") Long paymentId){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            paymentService.deletePayment(paymentId);
+            generalResponse.setMsg("Payment was Deleted");
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Payment was not deleted");
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }

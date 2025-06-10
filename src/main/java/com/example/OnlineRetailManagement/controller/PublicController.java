@@ -311,4 +311,20 @@ public class PublicController {
         }
     }
 
+    @DeleteMapping("address/{id}")
+    public ResponseEntity<?> deleteAddress(@PathVariable("id") Long addressId){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            addressService.deleteAddress(addressId);
+            generalResponse.setMsg("Address was Deleted");
+            generalResponse.setCode(HttpStatus.OK.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Address was not deleted");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

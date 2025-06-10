@@ -20,4 +20,10 @@ public class AddressService {
     public List<Address> getAdressesByUserId(Long userId){
         return addressRepository.getAddressesByUserId(userId);
     }
+
+    public void deleteAddress(Long addressId){
+        addressRepository.deleteById(addressId);
+    }
+
+
 }

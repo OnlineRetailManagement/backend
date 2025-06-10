@@ -1,6 +1,8 @@
 package com.example.OnlineRetailManagement.controller;
 
 import com.example.OnlineRetailManagement.DTO.CartResponseDTO;
+import com.example.OnlineRetailManagement.DTO.OrderRequestDTO;
+import com.example.OnlineRetailManagement.DTO.OrderResponseDTO;
 import com.example.OnlineRetailManagement.entity.Cart;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
@@ -9,12 +11,9 @@ import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.Product;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
-import com.example.OnlineRetailManagement.service.CartService;
-import com.example.OnlineRetailManagement.service.AttachmentService;
-import com.example.OnlineRetailManagement.service.ProductService;
-import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
-import com.example.OnlineRetailManagement.service.UserService;
+import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -45,6 +44,9 @@ public class UserController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private ProductService productService;
@@ -238,6 +240,47 @@ public class UserController {
             generalResponse.setMsg(String.valueOf(e));
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
 
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/order-checkout")
+    public ResponseEntity<?> addOrder(@RequestBody OrderRequestDTO requestDTO ){
+        log.info("checkout came: {}",requestDTO);
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<OrderResponseDTO> orderList = orderService.saveOrderItems(requestDTO);
+//            List<OrderResponseDTO> cartList2 = cartService.getCartOfUserId(userId);
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("List of items in the cart");
+            HashMap<String, List<OrderResponseDTO>> orderItems = new HashMap<>();
+            orderItems.put("order_items", orderList);
+            generalResponse.setData(orderItems);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cannot create orders for this user");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<?> getOrders(@RequestParam(name = "user_id") Long userId ){
+        log.info("request reached for getting order for: {}",userId);
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            List<OrderResponseDTO> orderList = orderService.getOrderItems(userId);
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("List of items in the cart");
+            HashMap<String, List<OrderResponseDTO>> orderItems = new HashMap<>();
+            orderItems.put("order_items", orderList);
+            generalResponse.setData(orderItems);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cannot fetch Orders for this user");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }

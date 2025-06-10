@@ -1,5 +1,7 @@
 package com.example.OnlineRetailManagement.DTO;
 
+import com.example.OnlineRetailManagement.entity.Address;
+import com.example.OnlineRetailManagement.entity.Payment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -27,4 +29,13 @@ public class OrderResponseDTO {
 
     @JsonProperty("checkout_date")
     private LocalDateTime checkoutDate;
+
+    @JsonProperty("order_status")
+    private String orderStatus;
+
+    @JsonProperty("address")
+    private Address address;
+
+    @JsonProperty("payment_info")
+    private Payment paymentInfo;
 }

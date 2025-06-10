@@ -3,13 +3,9 @@ package com.example.OnlineRetailManagement.controller;
 import com.example.OnlineRetailManagement.DTO.CartResponseDTO;
 import com.example.OnlineRetailManagement.DTO.OrderRequestDTO;
 import com.example.OnlineRetailManagement.DTO.OrderResponseDTO;
-import com.example.OnlineRetailManagement.entity.Cart;
-import com.example.OnlineRetailManagement.entity.GeneralResponse;
+import com.example.OnlineRetailManagement.entity.*;
 import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
-import com.example.OnlineRetailManagement.entity.Attachment;
 import com.example.OnlineRetailManagement.entity.GeneralResponse;
-import com.example.OnlineRetailManagement.entity.Product;
-import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
 import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
@@ -47,6 +43,9 @@ public class UserController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private AddressService addressService;
 
     @Autowired
     private ProductService productService;
@@ -251,7 +250,6 @@ public class UserController {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             List<OrderResponseDTO> orderList = orderService.saveOrderItems(requestDTO);
-//            List<OrderResponseDTO> cartList2 = cartService.getCartOfUserId(userId);
             generalResponse.setCode(HttpStatus.OK.value());
             generalResponse.setMsg("List of items in the cart");
             HashMap<String, List<OrderResponseDTO>> orderItems = new HashMap<>();
@@ -272,6 +270,7 @@ public class UserController {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             List<OrderResponseDTO> orderList = orderService.getOrderItems(userId);
+
             generalResponse.setCode(HttpStatus.OK.value());
             generalResponse.setMsg("List of items in the cart");
             HashMap<String, List<OrderResponseDTO>> orderItems = new HashMap<>();

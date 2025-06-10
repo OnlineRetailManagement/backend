@@ -4,10 +4,7 @@ package com.example.OnlineRetailManagement.service;
 import com.example.OnlineRetailManagement.DTO.OrderRequestDTO;
 import com.example.OnlineRetailManagement.DTO.OrderResponseDTO;
 import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
-import com.example.OnlineRetailManagement.entity.Attachment;
-import com.example.OnlineRetailManagement.entity.Cart;
-import com.example.OnlineRetailManagement.entity.Order;
-import com.example.OnlineRetailManagement.entity.Product;
+import com.example.OnlineRetailManagement.entity.*;
 import com.example.OnlineRetailManagement.repository.CartRepository;
 import com.example.OnlineRetailManagement.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +26,12 @@ public class OrderService {
     private ProductService productService;
 
     @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
     private AttachmentService attachmentService;
     public List<OrderResponseDTO> saveOrderItems(OrderRequestDTO requestDTO) {
         log.info("inside saveOrderItems: {}",requestDTO);
@@ -42,13 +45,18 @@ public class OrderService {
                             checkoutItem.getProductId(),
                             checkoutItem.getQuantity(),
                             requestDTO.getUserId(),
-                            checkoutItem.getOrderStatus()));
+                            checkoutItem.getOrderStatus(),
+                            requestDTO.getAddressId(),
+                            requestDTO.getPaymentId()));
                 });
 
         savedOrders.stream().forEach((order) -> {
 
             Product product= productService.findProduct(order.getProductId());
             List<Attachment> attachments=attachmentService.getAttachmentsByProductId(order.getProductId());
+            Address address= addressService.getAddressById(requestDTO.getAddressId());
+            Payment payment= paymentService.getPayment(requestDTO.getPaymentId());
+
 
             ProductResponseDTO productResponseDTO=ProductResponseDTO.builder()
                     .id(product.getId())
@@ -77,16 +85,20 @@ public class OrderService {
                     .checkoutDate(order.getCheckoutDate())
                     .product(productResponseDTO)
                     .quantity(order.getQuantity())
+                    .orderStatus(order.getOrderStatus())
+                    .address(address)
+                    .paymentInfo(payment)
                     .build();
             response.add(orderResponseDTO);
         });
+
         return  response;
 
     }
 
     private Order saveOrderItem(Long cartId, Long productId,
                                 Integer quantity, Long userId,
-                                String orderStatus) {
+                                String orderStatus, Long addressId, Long paymentId) {
         log.info("inside saveOrderItem");
         Order order=Order.builder()
                 .cartId(cartId)
@@ -94,7 +106,10 @@ public class OrderService {
                 .orderStatus(orderStatus)
                 .quantity(quantity)
                 .checkoutDate(LocalDateTime.now())
-                .userId(userId).build();
+                .userId(userId)
+                .addressId(addressId)
+                .paymentId(paymentId)
+                .build();
 
         log.info("inside saveOrderItem: {}",order);
         Order savedOrder= orderRepository.save(order);
@@ -106,24 +121,22 @@ public class OrderService {
 
         log.info("Getting order items for: {}",userId);
         List<Order> orders= orderRepository.findByUserId(userId);
+        log.info("Orders came for userId: {} {}",userId,orders.toString());
         List<OrderResponseDTO> response=new ArrayList<>();
-
-
-
-//        requestDTO.getCheckoutItems()
-//                .stream()
-//                .forEach((checkoutItem) -> {
-//                    savedOrders.add(this.saveOrderItem(checkoutItem.getCartId(),
-//                            checkoutItem.getProductId(),
-//                            checkoutItem.getQuantity(),
-//                            requestDTO.getUserId(),
-//                            checkoutItem.getOrderStatus()));
-//                });
 
         orders.stream().forEach((order) -> {
 
             Product product= productService.findProduct(order.getProductId());
+            log.info("Product Found for product id: {} {} ",order.getProductId(), product);
             List<Attachment> attachments=attachmentService.getAttachmentsByProductId(order.getProductId());
+            log.info("Attachments found for product id: {} {} ",order.getProductId(),attachments.toString());
+            log.info("Finding address for: {} ",order.getAddressId());
+            Address address= addressService.getAddressById(order.getAddressId());
+            log.info("address found for address id: {} {}",order.getAddressId(),address);
+
+            log.info("Finding address for: {} ",order.getAddressId());
+            Payment payment= paymentService.getPayment(order.getPaymentId());
+            log.info("address found for address id: {} {}",order.getAddressId(),address);
 
             ProductResponseDTO productResponseDTO=ProductResponseDTO.builder()
                     .id(product.getId())
@@ -152,6 +165,9 @@ public class OrderService {
                     .checkoutDate(order.getCheckoutDate())
                     .product(productResponseDTO)
                     .quantity(order.getQuantity())
+                    .orderStatus(order.getOrderStatus())
+                    .address(address)
+                    .paymentInfo(payment)
                     .build();
             response.add(orderResponseDTO);
         });

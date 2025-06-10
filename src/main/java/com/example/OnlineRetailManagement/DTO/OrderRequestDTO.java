@@ -17,6 +17,12 @@ public class OrderRequestDTO {
     @JsonProperty("user_id")
     private Long userId;
 
+    @JsonProperty("address_id")
+    private Long addressId;
+
+    @JsonProperty("payment_id")
+    private Long paymentId;
+
     @JsonProperty("checkout_items")
     private List<CheckoutItemDTO> checkoutItems;
 }

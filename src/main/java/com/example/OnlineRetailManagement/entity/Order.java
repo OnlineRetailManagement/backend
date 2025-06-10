@@ -37,4 +37,11 @@ public class Order {
 
     @Column(name = "order_status", nullable = false)
     private String orderStatus; // VARCHAR(255)
+
+    @Column(name = "payment_id", nullable = false)
+    private Long paymentId; // VARCHAR(255)
+
+    @Column(name = "address_id", nullable = false)
+    private Long addressId; // VARCHAR(255)
+
 }

@@ -7,6 +7,7 @@ import com.example.OnlineRetailManagement.DTO.ProductResponseDTO;
 import com.example.OnlineRetailManagement.entity.*;
 import com.example.OnlineRetailManagement.repository.CartRepository;
 import com.example.OnlineRetailManagement.repository.OrderRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -229,5 +230,61 @@ public class OrderService {
             response.add(orderResponseDTO);
         });
         return  response;
+    }
+
+    public OrderResponseDTO updateOrderItemForVendor(Long orderId, String orderStatus) {
+
+        log.info("Getting order items for: {}",orderId);
+        Order order= orderRepository.findById(orderId).orElseThrow(
+                () -> new EntityNotFoundException("Order not found with id: " + orderId));
+        order.setOrderStatus(orderStatus);
+        Order updatedOrder=orderRepository.save(order);
+        log.info("Orders came for order Id: {} {}",orderId,updatedOrder);
+
+        Product product= productService.findProduct(updatedOrder.getProductId());
+        log.info("Product Found for product id: {} {} ",updatedOrder.getProductId(), product);
+        List<Attachment> attachments=attachmentService.getAttachmentsByProductId(updatedOrder.getProductId());
+        log.info("Attachments found for product id: {} {} ",updatedOrder.getProductId(),attachments.toString());
+        log.info("Finding address for: {} ",updatedOrder.getAddressId());
+        Address address= addressService.getAddressById(updatedOrder.getAddressId());
+        log.info("address found for address id: {} {}",updatedOrder.getAddressId(),address);
+
+        log.info("Finding address for: {} ",updatedOrder.getAddressId());
+        Payment payment= paymentService.getPayment(updatedOrder.getPaymentId());
+        log.info("address found for address id: {} {}",updatedOrder.getAddressId(),address);
+
+        ProductResponseDTO productResponseDTO=ProductResponseDTO.builder()
+                .id(product.getId())
+                .actualPrice(product.getActualPrice())
+                .discountedPrice(product.getDiscountedPrice())
+                .category(product.getCategory())
+                .createdAt(product.getCreatedAt())
+                .ownedBy(product.getOwnedBy())
+                .deliveryTime(product.getDeliveryTime())
+                .title(product.getTitle())
+                .titleDescription(product.getTitleDescription())
+                .description(product.getDescription())
+                .dimensions(product.getDimensions())
+                .rating(product.getRating())
+                .review(product.getReview())
+                .soldQuantity(product.getSoldQuantity())
+                .totalQuantity(product.getTotalQuantity())
+                .availableQuantity(product.getAvailableQuantity())
+                .weight(product.getWeight())
+                .attachments(attachments)
+                .build();
+
+        OrderResponseDTO orderResponseDTO=OrderResponseDTO.builder()
+                .userId(updatedOrder.getUserId())
+                .orderId(updatedOrder.getId())
+                .checkoutDate(updatedOrder.getCheckoutDate())
+                .product(productResponseDTO)
+                .quantity(updatedOrder.getQuantity())
+                .orderStatus(updatedOrder.getOrderStatus())
+                .address(address)
+                .paymentInfo(payment)
+                .build();
+
+        return  orderResponseDTO;
     }
 }

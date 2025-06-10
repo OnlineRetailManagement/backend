@@ -257,4 +257,26 @@ public class VendorController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/orders")
+    public ResponseEntity<?> updateOrders(@RequestParam(name = "order_id") Long orderId, @RequestParam(name = "order_status") String orderStatus){
+        log.info("request reached for updating order for order ID: {}",orderId);
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            OrderResponseDTO updatedOrder = orderService.updateOrderItemForVendor(orderId, orderStatus);
+
+            generalResponse.setCode(HttpStatus.OK.value());
+            generalResponse.setMsg("List of items in the cart");
+            HashMap<String, OrderResponseDTO> orderItems = new HashMap<>();
+            orderItems.put("order_items", updatedOrder);
+            generalResponse.setData(orderItems);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Cannot fetch Orders for this user");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

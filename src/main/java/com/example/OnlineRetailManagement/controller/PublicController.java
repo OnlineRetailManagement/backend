@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -395,6 +396,30 @@ public class PublicController {
         } catch (Exception e) {
             generalResponse.setMsg("Payment was not deleted");
             generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<GeneralResponse> getSingleUsers(@PathVariable("id") Long userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+
+            HashMap<String, Object> data = new HashMap<>();
+            Optional<User> user = userService.findById(userId);
+            data.put("user", user);
+            generalResponse.setData(data);
+            Integer statusCode = HttpStatus.OK.value();
+            generalResponse.setCode(statusCode);
+            generalResponse.setMsg("User with id : "+userId);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg(String.valueOf(e));
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }

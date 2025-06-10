@@ -291,5 +291,24 @@ public class PublicController {
         }
     }
 
+    @PutMapping("address/{id}")
+    public ResponseEntity<?> updateAddress(@PathVariable("id") Long addressId, @RequestBody Address address){
+        GeneralResponse generalResponse = new GeneralResponse();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            address.setId(addressId);
+            Address addressResponse =  addressService.saveAddress(address);
+            generalResponse.setMsg("Address was updated");
+            generalResponse.setCode(HttpStatus.OK.value());
+            HashMap<String, Address> addressMap = new HashMap<>();
+            addressMap.put("updated_address", addressResponse);
+            generalResponse.setData(addressMap);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            generalResponse.setMsg("Address were not updated");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

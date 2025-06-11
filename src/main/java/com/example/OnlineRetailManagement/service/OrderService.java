@@ -295,4 +295,14 @@ public class OrderService {
     public Integer findTotalCountOrders(){
         return orderRepository.findTotalCountOrders();
     }
+
+    public Integer getTotalRevenue(){
+        Integer totalRevenue = orderRepository.getTotalRevenue();
+        return totalRevenue;
+    }
+
+    public Integer getTotalDiscountedRevenue(){
+        Integer discountedTotalRevenue = orderRepository.getTotalRevenue();
+        return discountedTotalRevenue;
+    }
 }

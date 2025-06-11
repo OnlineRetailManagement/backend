@@ -324,12 +324,16 @@ public class AdminController {
             Integer totalUserCount = userService.findTotalCountUsers();
             Integer totalVendorCount = userService.findTotalCountVendors();
             Integer totalOrderCount = orderService.findTotalCountOrders();
+            Integer totalRevenue = orderService.getTotalRevenue();
+            Integer discountedTotalRevenue = orderService.getTotalDiscountedRevenue();
             generalResponse.setMsg("Statistics fetched successfully");
             generalResponse.setCode(HttpStatus.OK.value());
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("total_users", totalUserCount);
             dataMap.put("total_vendors", totalVendorCount);
             dataMap.put("total_order_count", totalOrderCount);
+            dataMap.put("total_revenue", totalRevenue);
+            dataMap.put("total_discounted_revenue", discountedTotalRevenue);
             generalResponse.setData(dataMap);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         }catch (Exception e){

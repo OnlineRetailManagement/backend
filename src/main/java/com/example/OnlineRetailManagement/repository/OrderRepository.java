@@ -2,13 +2,11 @@ package com.example.OnlineRetailManagement.repository;
 
 
 import com.example.OnlineRetailManagement.entity.Order;
-import jakarta.persistence.Column;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -22,4 +20,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT count(*) FROM order", nativeQuery = true)
     Integer findTotalCountOrders();
 
+    @Query(value = "SELECT SUM(o.quantity * p.actual_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id;", nativeQuery = true)
+    Integer getTotalRevenue();
+
+    @Query(value = "SELECT SUM(o.quantity * p.actual_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id;", nativeQuery = true)
+    Integer getTotalRevenueDiscounted();
 }

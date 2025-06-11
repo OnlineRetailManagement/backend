@@ -325,7 +325,7 @@ public class OrderService {
     }
 
     public Integer getTotalDiscountedRevenue(){
-        Integer discountedTotalRevenue = orderRepository.getTotalRevenue();
+        Integer discountedTotalRevenue = orderRepository.getTotalRevenueDiscounted();
         return discountedTotalRevenue;
     }
 
@@ -357,6 +357,51 @@ public class OrderService {
     public Integer getCountInDelivered(){
         Integer countInDelivered = orderRepository.getCountInDelivered();
         return countInDelivered;
+    }
+
+    public Integer getCustomerCount(Long vendorId){
+        Integer customerCount = orderRepository.getCustomerCount(vendorId);
+        return customerCount;
+    }
+
+    public Integer getTotalRevenueVendor(Long vendorId){
+        Integer totalRevenueVendor = orderRepository.getTotalRevenueVendor(vendorId);
+        return totalRevenueVendor;
+    }
+
+    public Integer getTotalRevenueDiscountedVendor(Long vendorId){
+        Integer totalRevenueDiscountedVendor = orderRepository.getTotalRevenueDiscountedVendor(vendorId);
+        return totalRevenueDiscountedVendor;
+    }
+
+    public Integer getCountProcessingVendor(Long vendorId){
+        Integer countProcessingVendor = orderRepository.getCountProcessingVendor(vendorId);
+        return countProcessingVendor;
+    }
+
+    public Integer getCountConfirmedVendor(Long vendorId){
+        Integer countConfirmedVendor = orderRepository.getCountConfirmedVendor(vendorId);
+        return countConfirmedVendor;
+    }
+
+    public Integer getCountShippedVendor(Long vendorId){
+        Integer countShippedVendor = orderRepository.getCountShippedVendor(vendorId);
+        return countShippedVendor;
+    }
+
+    public Integer getCountInTransitVendor(Long vendorId){
+        Integer countInTransitVendor = orderRepository.getCountInTransitVendor(vendorId);
+        return countInTransitVendor;
+    }
+
+    public Integer getCountOutForDeliveryVendor(Long vendorId){
+        Integer countOutForDeliveryVendor = orderRepository.getCountOutForDeliveryVendor(vendorId);
+        return countOutForDeliveryVendor;
+    }
+
+    public Integer getCountInDeliveredVendor(Long vendorId){
+        Integer countInDeliveredVendor = orderRepository.getCountInDeliveredVendor(vendorId);
+        return countInDeliveredVendor;
     }
 
 }

@@ -273,6 +273,7 @@ public class AdminController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/products/{id}")
     public ResponseEntity<GeneralResponse> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductRequestDTO requestDTO){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

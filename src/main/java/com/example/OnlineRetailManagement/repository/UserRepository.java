@@ -26,5 +26,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT count(*) FROM user where role = 'ROLE_USER'", nativeQuery = true)
     Integer findTotalCountUsers();
-
 }

@@ -279,4 +279,45 @@ public class VendorController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<GeneralResponse> vendorStatistics(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+            User vendorDetail = userService.findByEmail(authentication.getName());
+            Long vendorId = vendorDetail.getId();
+            Integer customerCount = orderService.getCustomerCount(vendorId);
+            Integer totalRevenueVendor = orderService.getTotalRevenueVendor(vendorId);
+            Integer totalRevenueDiscountedVendor = orderService.getTotalRevenueDiscountedVendor(vendorId);
+            Integer countProcessingVendor = orderService.getCountProcessingVendor(vendorId);
+            Integer countConfirmedVendor = orderService.getCountConfirmedVendor(vendorId);
+            Integer countShippedVendor = orderService.getCountShippedVendor(vendorId);
+            Integer countInTransitVendor = orderService.getCountInTransitVendor(vendorId);
+            Integer countOutForDeliveryVendor = orderService.getCountOutForDeliveryVendor(vendorId);
+            Integer countInDeliveredVendor = orderService.getCountInDeliveredVendor(vendorId);
+
+            HashMap<String, Integer> statsMap = new HashMap<>();
+            statsMap.put("customer_count", customerCount);
+            statsMap.put("total_revenue", totalRevenueVendor);
+            statsMap.put("total_revenue_discounted_vendor", totalRevenueDiscountedVendor);
+            statsMap.put("count_processing", countProcessingVendor);
+            statsMap.put("count_confirmed", countConfirmedVendor);
+            statsMap.put("count_shipped", countShippedVendor);
+            statsMap.put("count_in_transit", countInTransitVendor);
+            statsMap.put("count_out_for_delivery", countOutForDeliveryVendor);
+            statsMap.put("count_in_delivered", countInDeliveredVendor);
+
+            generalResponse.setData(statsMap);
+            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+
+            generalResponse.setMsg("Cannot fetch statistics");
+            generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

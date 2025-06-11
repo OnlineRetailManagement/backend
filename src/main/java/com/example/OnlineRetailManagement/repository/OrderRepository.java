@@ -77,7 +77,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT count(*) as total_count FROM cart AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountCartVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM order AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountOrderVendor(@Param("vendorId") Long vendorId);
 
 }

@@ -33,6 +33,9 @@ public class OrderService {
     private PaymentService paymentService;
 
     @Autowired
+    private CartService cartService;
+
+    @Autowired
     private AttachmentService attachmentService;
     public List<OrderResponseDTO> saveOrderItems(OrderRequestDTO requestDTO) {
         log.info("inside saveOrderItems: {}",requestDTO);

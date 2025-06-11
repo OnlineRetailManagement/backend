@@ -7,10 +7,7 @@ import com.example.OnlineRetailManagement.entity.GeneralResponse;
 import com.example.OnlineRetailManagement.entity.Product;
 import com.example.OnlineRetailManagement.entity.User;
 import com.example.OnlineRetailManagement.repository.UserRepository;
-import com.example.OnlineRetailManagement.service.AttachmentService;
-import com.example.OnlineRetailManagement.service.ProductService;
-import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
-import com.example.OnlineRetailManagement.service.UserService;
+import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,9 @@ public class AdminController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/health-check")
     public String healthCheck() {
@@ -323,13 +323,14 @@ public class AdminController {
         try{
             Integer totalUserCount = userService.findTotalCountUsers();
             Integer totalVendorCount = userService.findTotalCountVendors();
+            Integer totalOrderCount = orderService.findTotalCountOrders();
             generalResponse.setMsg("Statistics fetched successfully");
             generalResponse.setCode(HttpStatus.OK.value());
             HashMap<String, Object> dataMap = new HashMap<>();
             dataMap.put("total_users", totalUserCount);
             dataMap.put("total_vendors", totalVendorCount);
+            dataMap.put("total_order_count", totalOrderCount);
             generalResponse.setData(dataMap);
-
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         }catch (Exception e){
             System.out.println(e);

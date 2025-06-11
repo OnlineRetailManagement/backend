@@ -287,4 +287,8 @@ public class OrderService {
 
         return  orderResponseDTO;
     }
+
+    public Integer findTotalCountOrders(){
+        return orderRepository.findTotalCountOrders();
+    }
 }

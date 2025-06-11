@@ -27,8 +27,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String paymentInfo;
-
     @Column(nullable = false)
     private String role;
 

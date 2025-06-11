@@ -134,6 +134,7 @@ public class PublicController {
 
     @PutMapping("profile/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long userId, @RequestBody User updatedUser) {
+        log.info("update profile came for user: {}",updatedUser);
         GeneralResponse generalResponse = new GeneralResponse();
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -142,7 +143,8 @@ public class PublicController {
             if(currentUser.getRole().equals("ROLE_USER") || currentUser.getRole().equals("ROLE_VENDOR")){
                 if(currentUser.getId() == userId){
                     updatedUser.setId(userId);
-                    userService.saveNewUser(updatedUser);
+                    updatedUser.setPassword(currentUser.getPassword());
+                    userService.saveUser(updatedUser);
                     generalResponse.setMsg("User Updated");
                 }
                 else{
@@ -151,7 +153,7 @@ public class PublicController {
             }
             else{
                 updatedUser.setId(userId);
-                userService.saveNewUser(updatedUser);
+                userService.saveUser(updatedUser);
                 generalResponse.setMsg("User Updated");
             }
             generalResponse.setCode(HttpStatus.OK.value());

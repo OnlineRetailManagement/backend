@@ -123,12 +123,22 @@ public class OrderService {
         return savedOrder;
     }
 
-    public List<OrderResponseDTO> getOrderItems(Long userId) {
+    public List<OrderResponseDTO> getOrderItems(Long userId, Boolean isActive) {
 
         log.info("Getting order items for: {}",userId);
         List<Order> orders= orderRepository.findByUserId(userId);
         log.info("Orders came for userId: {} {}",userId,orders.toString());
         List<OrderResponseDTO> response=new ArrayList<>();
+
+        orders=orders.stream()
+                .filter(order -> {
+                    if (isActive) {
+                        return !order.getOrderStatus().equalsIgnoreCase("delivered");
+                    } else {
+                        return order.getOrderStatus().equalsIgnoreCase("delivered");
+                    }
+                })
+                .collect(Collectors.toList());
 
         orders.stream().forEach((order) -> {
 

@@ -264,12 +264,12 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<?> getOrders(@RequestParam(name = "user_id") Long userId ){
+    public ResponseEntity<?> getOrders(@RequestParam(name = "user_id") Long userId,@RequestParam(name = "is_active") Boolean isActive ){
         log.info("request reached for getting order for: {}",userId);
         GeneralResponse generalResponse = new GeneralResponse();
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            List<OrderResponseDTO> orderList = orderService.getOrderItems(userId);
+            List<OrderResponseDTO> orderList = orderService.getOrderItems(userId,isActive);
 
             generalResponse.setCode(HttpStatus.OK.value());
             generalResponse.setMsg("List of items in the cart");

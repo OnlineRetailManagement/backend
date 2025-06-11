@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -179,12 +180,24 @@ public class OrderService {
         return  response;
     }
 
-    public List<OrderResponseDTO> getOrderItemsForVendor(Long userId) {
+    public List<OrderResponseDTO> getOrderItemsForVendor(Long userId, Boolean isActive) {
 
         log.info("Getting order items for: {}",userId);
         List<Order> orders= orderRepository.findByVendorId(userId);
         log.info("Orders came for userId: {} {}",userId,orders.toString());
         List<OrderResponseDTO> response=new ArrayList<>();
+
+        orders=orders.stream()
+                .filter(order -> {
+                    if (isActive) {
+                        return !order.getOrderStatus().equalsIgnoreCase("delivered");
+                    } else {
+                        return order.getOrderStatus().equalsIgnoreCase("delivered");
+                    }
+                })
+                .collect(Collectors.toList());
+
+        log.info("Orders after filtering is_active: {} {}",isActive,orders);
 
         orders.stream().forEach((order) -> {
 

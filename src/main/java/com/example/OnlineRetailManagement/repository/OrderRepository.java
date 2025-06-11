@@ -14,10 +14,10 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserId(Long userId);
 
-    @Query(value = "SELECT o.id, o.cart_id, o.user_id, o.product_id, o.quantity ,o.checkout_date, o.order_status, o.payment_id, o.address_id from orders as o inner join product as p on o.product_id = p.id where p.owned_by = :userId and o.order_status != 'Delivered';", nativeQuery = true)
+    @Query(value = "SELECT o.id, o.cart_id, o.user_id, o.product_id, o.quantity ,o.checkout_date, o.order_status, o.payment_id, o.address_id from orders as o inner join product as p on o.product_id = p.id where p.owned_by = :userId;", nativeQuery = true)
     List<Order> findByVendorId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT count(*) FROM order", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders", nativeQuery = true)
     Integer findTotalCountOrders();
 
     @Query(value = "SELECT SUM(o.quantity * p.actual_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id;", nativeQuery = true)

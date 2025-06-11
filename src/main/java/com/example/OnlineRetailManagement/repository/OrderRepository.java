@@ -26,23 +26,26 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT SUM(o.quantity * p.discounted_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id;", nativeQuery = true)
     Integer getTotalRevenueDiscounted();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'processing';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'Processing';", nativeQuery = true)
     Integer getCountProcessing();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'confirmed';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'Confirmed';", nativeQuery = true)
     Integer getCountConfirmed();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'shipped';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'Shipped';", nativeQuery = true)
     Integer getCountShipped();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'in_transit';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'In Transit';", nativeQuery = true)
     Integer getCountInTransit();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'out_for_delivery';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'Out for Delivery';", nativeQuery = true)
     Integer getCountOutForDelivery();
 
-    @Query(value = "SELECT count(*) FROM orders where order_status = 'delivered';", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'Delivered';", nativeQuery = true)
     Integer getCountInDelivered();
+
+    @Query(value = "SELECT count(*) FROM cart", nativeQuery = true)
+    Integer findTotalCartCount();
 
     @Query(value = "SELECT count(distinct o.user_id) as total_users FROM orders as o inner join product as p on o.product_id = p.id where owned_by = :vendorId;", nativeQuery = true)
     Integer getCustomerCount(@Param("vendorId") Long vendorId);
@@ -53,22 +56,28 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT SUM(o.quantity * p.discounted_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
     Integer getTotalRevenueDiscountedVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'processing' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'Processing' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountProcessingVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'confirmed' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'Confirmed' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountConfirmedVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'shipped' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'Shipped' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountShippedVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'in_transit' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'In Transit' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountInTransitVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'out_for_delivery' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'Out for Delivery' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountOutForDeliveryVendor(@Param("vendorId") Long vendorId);
 
-    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'delivered' and p.owned_by = :vendorId;", nativeQuery = true)
+    @Query(value = "SELECT count(*) as total_count FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id where o.order_status = 'Delivered' and p.owned_by = :vendorId;", nativeQuery = true)
     Integer getCountInDeliveredVendor(@Param("vendorId") Long vendorId);
+
+    @Query(value = "SELECT count(*) as total_count FROM cart AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
+    Integer getCountCartVendor(@Param("vendorId") Long vendorId);
+
+    @Query(value = "SELECT count(*) as total_count FROM order AS o INNER JOIN product AS p ON o.product_id = p.id where p.owned_by = :vendorId;", nativeQuery = true)
+    Integer getCountOrderVendor(@Param("vendorId") Long vendorId);
 
 }

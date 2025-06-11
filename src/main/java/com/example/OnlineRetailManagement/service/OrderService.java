@@ -404,4 +404,18 @@ public class OrderService {
         return countInDeliveredVendor;
     }
 
+    public Integer findTotalCartCount(){
+        Integer totalCartCount = orderRepository.findTotalCartCount();
+        return totalCartCount;
+    }
+
+    public Integer getCountCartVendor(Long vendorId){
+        Integer countCartVendor = orderRepository.getCountCartVendor(vendorId);
+        return countCartVendor;
+    }
+
+    public Integer getCountOrderVendor(Long vendorId){
+        Integer countOrderVendor = orderRepository.getCountOrderVendor(vendorId);
+        return countOrderVendor;
+    }
 }

@@ -296,6 +296,8 @@ public class VendorController {
             Integer countInTransitVendor = orderService.getCountInTransitVendor(vendorId);
             Integer countOutForDeliveryVendor = orderService.getCountOutForDeliveryVendor(vendorId);
             Integer countInDeliveredVendor = orderService.getCountInDeliveredVendor(vendorId);
+            Integer countCartVendor = orderService.getCountCartVendor(vendorId);
+            Integer countOrderVendor = orderService.getCountOrderVendor(vendorId);
 
             HashMap<String, Integer> statsMap = new HashMap<>();
             statsMap.put("customer_count", customerCount);
@@ -307,6 +309,8 @@ public class VendorController {
             statsMap.put("count_in_transit", countInTransitVendor);
             statsMap.put("count_out_for_delivery", countOutForDeliveryVendor);
             statsMap.put("count_in_delivered", countInDeliveredVendor);
+            statsMap.put("count_cart", countCartVendor);
+            statsMap.put("total_order_count", countOrderVendor);
 
             generalResponse.setData(statsMap);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);

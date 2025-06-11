@@ -283,4 +283,11 @@ public class UserController {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }
     }
+
+//    @GetMapping("/valid_review")
+//    public ResponseEntity<?> validReview(@RequestParam(name = "user_id") Long userId,@RequestParam(name = "product_id") Long productId){
+//
+//    }
+
+
 }

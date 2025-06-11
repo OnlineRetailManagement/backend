@@ -334,6 +334,7 @@ public class AdminController {
             Integer countInTransit = orderService.getCountInTransit();
             Integer countOutForDelivery = orderService.getCountOutForDelivery();
             Integer countInDelivered = orderService.getCountInDelivered();
+            Integer totalCartCount = orderService.findTotalCartCount();
 
             generalResponse.setMsg("Statistics fetched successfully");
             generalResponse.setCode(HttpStatus.OK.value());
@@ -349,6 +350,7 @@ public class AdminController {
             dataMap.put("count_in_transit", countInTransit);
             dataMap.put("count_out_for_delivery", countOutForDelivery);
             dataMap.put("count_in_delivered", countInDelivered);
+            dataMap.put("count_cart", totalCartCount);
 
 
             generalResponse.setData(dataMap);

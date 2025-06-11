@@ -49,6 +49,7 @@ public class OrderService {
                             checkoutItem.getOrderStatus(),
                             requestDTO.getAddressId(),
                             requestDTO.getPaymentId()));
+                    cartService.deleteCartByUserId(checkoutItem.getCartId());
                 });
 
         savedOrders.stream().forEach((order) -> {

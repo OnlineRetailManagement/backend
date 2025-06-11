@@ -7,7 +7,9 @@ import com.example.OnlineRetailManagement.service.*;
 import com.example.OnlineRetailManagement.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -248,6 +250,34 @@ public class PublicController {
             generalResponse.setData(data);
             generalResponse.setCode(HttpStatus.OK.value());
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/attachment")
+    public ResponseEntity<?> getAttachmentFile(@RequestParam("file_name") String fileName) {
+        GeneralResponse generalResponse = new GeneralResponse();
+        try{
+//            if (userId==null || productId==null) {
+//                generalResponse.setMsg("Missing required fields");
+//                generalResponse.setCode(HttpStatus.BAD_REQUEST.value());
+//                return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
+//            }
+//            List<Attachment> attachments=attachmentService.getAttachmentsByProductId(productId);
+
+            InputStreamResource response=attachmentService.getAttachmentsOfProductId(fileName);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(response);
+
+//            generalResponse.setMsg("File uploaded successfully");
+//            HashMap<String, Object> data = new HashMap<>();
+//            data.put("attachment", response);
+//            generalResponse.setData(data);
+//            generalResponse.setCode(HttpStatus.OK.value());
+//            return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(generalResponse, HttpStatus.BAD_REQUEST);
         }

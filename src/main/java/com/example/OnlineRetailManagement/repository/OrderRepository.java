@@ -25,4 +25,23 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query(value = "SELECT SUM(o.quantity * p.actual_price) AS total_revenue FROM orders AS o INNER JOIN product AS p ON o.product_id = p.id;", nativeQuery = true)
     Integer getTotalRevenueDiscounted();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'processing';", nativeQuery = true)
+    Integer getCountProcessing();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'confirmed';", nativeQuery = true)
+    Integer getCountConfirmed();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'shipped';", nativeQuery = true)
+    Integer getCountShipped();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'in_transit';", nativeQuery = true)
+    Integer getCountInTransit();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'out_for_delivery';", nativeQuery = true)
+    Integer getCountOutForDelivery();
+
+    @Query(value = "SELECT count(*) FROM orders where order_status = 'delivered';", nativeQuery = true)
+    Integer getCountInDelivered();
+
 }

@@ -326,6 +326,14 @@ public class AdminController {
             Integer totalOrderCount = orderService.findTotalCountOrders();
             Integer totalRevenue = orderService.getTotalRevenue();
             Integer discountedTotalRevenue = orderService.getTotalDiscountedRevenue();
+
+            Integer countProcessing = orderService.getCountProcessing();
+            Integer countConfirmed = orderService.getCountConfirmed();
+            Integer countShipped = orderService.getCountShipped();
+            Integer countInTransit = orderService.getCountInTransit();
+            Integer countOutForDelivery = orderService.getCountOutForDelivery();
+            Integer countInDelivered = orderService.getCountInDelivered();
+
             generalResponse.setMsg("Statistics fetched successfully");
             generalResponse.setCode(HttpStatus.OK.value());
             HashMap<String, Object> dataMap = new HashMap<>();
@@ -334,6 +342,14 @@ public class AdminController {
             dataMap.put("total_order_count", totalOrderCount);
             dataMap.put("total_revenue", totalRevenue);
             dataMap.put("total_discounted_revenue", discountedTotalRevenue);
+            dataMap.put("count_processing", countProcessing);
+            dataMap.put("count_confirmed", countConfirmed);
+            dataMap.put("count_shipped", countShipped);
+            dataMap.put("count_in_transit", countInTransit);
+            dataMap.put("count_out_for_delivery", countOutForDelivery);
+            dataMap.put("count_in_delivered", countInDelivered);
+
+
             generalResponse.setData(dataMap);
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         }catch (Exception e){

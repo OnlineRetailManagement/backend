@@ -318,4 +318,35 @@ public class OrderService {
         Integer discountedTotalRevenue = orderRepository.getTotalRevenue();
         return discountedTotalRevenue;
     }
+
+    public Integer getCountProcessing(){
+        Integer countProcessing = orderRepository.getCountProcessing();
+        return countProcessing;
+    }
+
+    public Integer getCountConfirmed(){
+        Integer countConfirmed = orderRepository.getCountConfirmed();
+        return countConfirmed;
+    }
+
+    public Integer getCountShipped(){
+        Integer countShipped = orderRepository.getCountShipped();
+        return countShipped;
+    }
+
+    public Integer getCountInTransit(){
+        Integer countInTransit = orderRepository.getCountInTransit();
+        return countInTransit;
+    }
+
+    public Integer getCountOutForDelivery(){
+        Integer countOutForDelivery = orderRepository.getCountOutForDelivery();
+        return countOutForDelivery;
+    }
+
+    public Integer getCountInDelivered(){
+        Integer countInDelivered = orderRepository.getCountInDelivered();
+        return countInDelivered;
+    }
+
 }

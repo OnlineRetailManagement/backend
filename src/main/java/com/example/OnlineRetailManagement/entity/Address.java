@@ -33,7 +33,7 @@ public class Address {
     private String description;
 
     @Column(name = "user_id")
-    private String userId;
+    private Long userId;
 
     @Column(name = "delivery_email")
     private String deliveryEmail;

@@ -4,6 +4,7 @@ import com.example.OnlineRetailManagement.filter.JwtFilter;
 import com.example.OnlineRetailManagement.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -39,11 +40,16 @@ public class SpringSecurity {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Allow preflight OPTIONS requests to all endpoints
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Allow public endpoints without authentication
                         .requestMatchers("/public/**").permitAll()
+                        // Role-based endpoints
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/vendor/**").hasRole("VENDOR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
+                // Add JWT filter but it should skip OPTIONS requests internally
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

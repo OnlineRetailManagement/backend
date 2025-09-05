@@ -1,32 +1,22 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres-docker
-    restart: always
-    environment:
-      POSTGRES_DB: retaildb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-    ports:
-      - "5432:5432"
-    networks:
-      - springboot-net
-
   springboot-app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: springboot-container
-    depends_on:
-      - postgres
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/retaildb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d2tin0re5dus73dsudf0-a:5432/retaildb_srwh?sslmode=require
+      SPRING_DATASOURCE_USERNAME: retaildb_srwh_user
+      SPRING_DATASOURCE_PASSWORD: AmUhlMJjDco78VqITzLuWMG8vUl6jkyQ
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_NAMING_PHYSICAL_STRATEGY: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      SPRING_JACKSON_PROPERTY_NAMING_STRATEGY: SNAKE_CASE
     networks:
       - springboot-net
 

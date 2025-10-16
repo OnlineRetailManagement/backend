@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://retaildb_bs4x_user:Ve29LGlnTqHX2HI7GhY2hxalUcN9ESaJ@dpg-d3oe46ripnbc73fu1ang-a/retaildb_bs4x?sslmode=require
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d3oe46ripnbc73fu1ang-a.oregon-postgres.render.com:5432/retaildb_bs4x?sslmode=require
       SPRING_DATASOURCE_USERNAME: retaildb_bs4x_user
       SPRING_DATASOURCE_PASSWORD: Ve29LGlnTqHX2HI7GhY2hxalUcN9ESaJ
       SPRING_JPA_HIBERNATE_DDL_AUTO: update

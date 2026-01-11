@@ -9,9 +9,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d4strjmr433s73cld640-a:5432/retaildb_0dlp?sslmode=require
-      SPRING_DATASOURCE_USERNAME: retaildb_0dlp_user
-      SPRING_DATASOURCE_PASSWORD: 3MZl8vcXwErw6Uz9qtY92yeAGi3XeVeq
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d5huhdh4tr6s739sf9g0-a.oregon-postgres.render.com:5432/retaildb_ss2i?sslmode=require
+      SPRING_DATASOURCE_USERNAME: retaildb_ss2i_user
+      SPRING_DATASOURCE_PASSWORD: kpbq6E8zUt97qVLE9zVBm9jcs62ZDMmJ
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
